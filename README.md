@@ -1,6 +1,21 @@
 # Organizer
 
-Organizer is a Python tool to focus your windows with keyboard shortcuts.
+Organizer is a Python tool to focus your windows with keyboard shortcuts.\
+
+**Example:** Open Firefox by pressing `ctrl+1`, discord by pressing `ctrl+2`, etc, and go back to the previous window by pressing `page_down`.
+
+## Requirements
+
+- Python 3.10+
+- Yabai: https://github.com/koekeishiya/yabai
+- Poetry: https://python-poetry.org/docs/ _(optional, you can use `pip` instead and install the dependencies manually)_
+- Poe: https://github.com/nathan-ho/poe _(optional, you can run the `script` directly)_
+
+## How to use
+
+1. Clone the repository
+2. Install the dependencies: `poetry install` or `pip install pynput toml`
+3. Run the script: `poetry run python src/app.py` or `poe run`
 
 ## Configuration
 
@@ -41,8 +56,10 @@ Here's a description of the configuration options:
 | `organizer.[number]` | app_name?  | The name of the application.                             |
 | `organizer.[number]` | title?     | The title of the window.                                 |
 
-The tool will search open windows for the specified application and title, and switch to the first one it finds.
-`app_name` and `title` are optional, and can be used to narrow down the search.
+The tool will search open windows for the specified application and title, and switch to the first one it finds.\
+`app_name` and `title` are optional, and can be used to narrow down the search.\
 `number` is the order in which the windows will be switched, should be unique.
+
+You can find a full list of keyboard shortcuts [here](https://pynput.readthedocs.io/en/latest/keyboard.html#pynput.keyboard.Key).
 
 
