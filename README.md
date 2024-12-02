@@ -33,12 +33,13 @@ title = "spotify"
 
 Here's a description of the configuration options:
 
-| Block                | Field     | Description                                             |
-| ---                  | ---       | ---                                                     |
-| `shortcut`           | next      | The keyboard shortcut to switch to the next window.     |
-| `shortcut`           | prev      | The keyboard shortcut to switch to the previous window. |
-| `organizer.[number]` | app_name? | The name of the application.                            |
-| `organizer.[number]` | title?    | The title of the window.                                |
+| Block                | Field      | Description                                              |
+| ---                  | ---        | ---                                                      |
+| `shortcut`           | next       | The keyboard shortcut to switch to the next window.      |
+| `shortcut`           | prev       | The keyboard shortcut to switch to the previous window.  |
+| `shortcut`           | `[number]` | The keyboard shortcut to switch to the specified window. |
+| `organizer.[number]` | app_name?  | The name of the application.                             |
+| `organizer.[number]` | title?     | The title of the window.                                 |
 
 The tool will search open windows for the specified application and title, and switch to the first one it finds.
 `app_name` and `title` are optional, and can be used to narrow down the search.
