@@ -1,6 +1,6 @@
 # Organizer
 
-Organizer is a Python tool to focus your windows with keyboard shortcuts.\
+Organizer is a Python tool to focus your windows with keyboard shortcuts on macOS.
 
 **Example:** Open Firefox by pressing `ctrl+1`, discord by pressing `ctrl+2`, etc, and go back to the previous window by pressing `page_down`.
 
