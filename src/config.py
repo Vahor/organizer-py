@@ -1,10 +1,22 @@
 import dataclasses
-import tomllib as toml
+import toml
 
 @dataclasses.dataclass
 class Shortcut:
     next: str
     prev: str
+    _1: str
+    _2: str
+    _3: str
+    _4: str
+    _5: str
+    _6: str
+    _7: str
+    _8: str
+    _9: str
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 @dataclasses.dataclass
 class Window:
@@ -23,7 +35,7 @@ class Config:
     organizer: Organizer
 
 def load_config(file_path: str = "./config.toml") -> Config:
-    with open(file_path, 'rb') as f:
+    with open(file_path, 'r') as f:
         toml_data = toml.load(f)
 
         windows = {}
@@ -32,9 +44,17 @@ def load_config(file_path: str = "./config.toml") -> Config:
                 **window
             )
 
+        # add _ to numbers
+        shortcuts = {}
+        for key, value in toml_data['shortcut'].items():
+            if key.isnumeric():
+                shortcuts[f'_{key}'] = value
+            else:
+                shortcuts[key] = value
+
         return Config(
                 shortcut=Shortcut(
-                    **toml_data['shortcut']
+                    **shortcuts
                 ),
                 
                 organizer=Organizer(
