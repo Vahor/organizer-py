@@ -23,6 +23,14 @@ class Window:
     app_name: str | None = None
     title: str | None = None
 
+    def name(self):
+        if self.app_name and self.title:
+            return f"{self.app_name} - {self.title}"
+        elif self.app_name:
+            return self.app_name
+        elif self.title:
+            return self.title
+
 
 @dataclasses.dataclass
 class Organizer:

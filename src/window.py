@@ -3,7 +3,6 @@ import json
 from config import Window
 
 def get_window_by_name(query: Window):
-    print(f"Searching for window: {query}")
     try:
         # Search for the window by name
         app_name = (query.app_name or '').lower()
@@ -49,5 +48,3 @@ def focus_window_by_name(query: Window):
     if window:
         subprocess.run(['yabai', '-m', 'window', '--focus', str(window['id'])])
         return True
-
-    print(f"Window not found: {query}")

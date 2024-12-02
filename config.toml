@@ -1,6 +1,6 @@
 [shortcut]
-next = "<shift>+1"
-prev = "<shift>+2"
+next = "|"
+prev = "["
 1    = "<ctrl>+1"
 2    = "<ctrl>+2"
 3    = "<ctrl>+3"
