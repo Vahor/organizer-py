@@ -1,11 +1,8 @@
 from config import load_config
-from window import focus_window_by_name, get_window_by_name
+from window import focus_window_by_name
 from pynput import keyboard
 
 current_index = 1
-
-def on_key_release(key):
-    print(key)
 
 def next_index():
     global current_index
@@ -30,7 +27,7 @@ if __name__ == "__main__":
     #     print(window, found.get('title') if found else 'not found')
 
     hotkeys = {
-        "h": lambda: print("Hello"),
+        "q": lambda: print("todo"),
         # TODO: don't know why but doing this in a loop doesn't work
         config.shortcut._1: lambda: focus_window_by_name(config.organizer.windows[1]),
         config.shortcut._2: lambda: focus_window_by_name(config.organizer.windows[2]),

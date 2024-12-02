@@ -1,9 +1,6 @@
 import subprocess
 import json
 from config import Window
-from threading import Thread, Lock
-
-mutex = Lock()
 
 def get_window_by_name(query: Window):
     print(f"Searching for window: {query}")
@@ -46,12 +43,11 @@ def get_window_by_name(query: Window):
         return None
 
 def focus_window_by_name(query: Window):
-    with mutex:
-        if not query:
-            return False
-        window = get_window_by_name(query)
-        if window:
-            subprocess.run(['yabai', '-m', 'window', '--focus', str(window['id'])])
-            return True
+    if not query:
+        return False
+    window = get_window_by_name(query)
+    if window:
+        subprocess.run(['yabai', '-m', 'window', '--focus', str(window['id'])])
+        return True
 
-        print(f"Window not found: {query}")
+    print(f"Window not found: {query}")

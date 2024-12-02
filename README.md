@@ -22,7 +22,7 @@ prev = "<shift>+2"
 
 [organizer.1]
 app_name = "firefox"
-title = "chatgpt"
+title = "vahor"
 
 [organizer.2]
 app_name = "discord"
