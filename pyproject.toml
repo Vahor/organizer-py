@@ -1,0 +1,24 @@
+[project]
+name = "organizer-py"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+package-mode = false
+
+[tool.poetry]
+name = "organizer-py"
+version = "0.1.0"
+description = ""
+authors = ["Vahor <me@vahor.fr>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pynput = "^1.7.7"
+toml = "^0.10.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

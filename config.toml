@@ -1,0 +1,13 @@
+[shortcut]
+next = "ctrl+1"
+prev = "ctrl+2"
+
+[organizer.1]
+app_name = "firefox"
+title = "chatgpt"
+
+[organizer.2]
+app_name = "discord"
+
+[organizer.3]
+title = "spotify"
