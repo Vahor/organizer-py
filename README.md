@@ -16,7 +16,7 @@ Organizer is a Python tool to focus your windows with keyboard shortcuts.\
 ## How to use
 
 1. Clone the repository
-2. Install the dependencies: `poetry install` or `pip install pynput toml`
+2. Install the dependencies: `poetry install` or `pip install pynput toml rich`
 3. Run the script: `poetry run python src/app.py` or `poe run`
 
 ## Configuration
