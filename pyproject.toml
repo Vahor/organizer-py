@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
-package-mode = false
+packages = [{include = "organizer_py", "from" = "src"}]
 
 [tool.poetry]
 name = "organizer-py"
@@ -17,6 +17,18 @@ readme = "README.md"
 python = "^3.10"
 pynput = "^1.7.7"
 toml = "^0.10.2"
+
+[tool.poe.tasks.build]
+cmd  = "poetry build"
+help = "Build the project"
+
+[tool.poe.tasks.install]
+cmd  = "poetry install"
+help = "Install the project"
+
+[tool.poe.tasks.run]
+cmd  = "poetry run python src/app.py"
+help = "Run the project"
 
 
 [build-system]
