@@ -1,4 +1,7 @@
-from state import State, config
+import signal
+import sys
+
+from state import State, config, add_log
 
 from window import focus_window_by_name
 from pynput import keyboard
@@ -27,16 +30,20 @@ def _prev_index(state: State):
 def setup_hotkeys(state: State):
 
     def quit_app():
-        state["status_message"] = "Quitting..."
+        add_log(state, "Goodbye!", "success")
         state["quitting"] = True
-        exit(0)
+        sys.exit(0)
+
+    def signal_handler(signum, frame):
+        quit_app()
+
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
 
     def focus_window_by_name_wrapper(query):
-        state["status_message"] = f"Focusing {query.name()}..."
-        if not focus_window_by_name(query):
-            state["status_message"] = (
-                f"[red]Error: Could not find window with name [b]{query.name()}[/b][/red]"
-            )
+        add_log(state, f"Focusing {query.name()}...", "info")
+        if not focus_window_by_name(query, state):
+            add_log(state, f"Could not find window with name {query.name()}", "error")
 
     hotkeys = {
         "q": lambda: quit_app(),
@@ -76,5 +83,8 @@ def setup_hotkeys(state: State):
         ),
     }
 
-    with keyboard.GlobalHotKeys(hotkeys) as h:
-        h.join()
+    try:
+        with keyboard.GlobalHotKeys(hotkeys) as h:
+            h.join()
+    except KeyboardInterrupt:
+        quit_app()
