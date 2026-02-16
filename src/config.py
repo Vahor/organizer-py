@@ -1,6 +1,7 @@
 import dataclasses
 import toml
 
+
 @dataclasses.dataclass
 class Shortcut:
     next: str
@@ -17,6 +18,7 @@ class Shortcut:
 
     def __getitem__(self, item):
         return getattr(self, item)
+
 
 @dataclasses.dataclass
 class Window:
@@ -42,30 +44,23 @@ class Config:
     shortcut: Shortcut
     organizer: Organizer
 
+
 def load_config(file_path: str = "./config.toml") -> Config:
-    with open(file_path, 'r') as f:
+    with open(file_path, "r") as f:
         toml_data = toml.load(f)
 
         windows = {}
-        for position, window in toml_data['organizer'].items():
-            windows[int(position)] = Window(
-                **window
-            )
+        for position, window in toml_data["organizer"].items():
+            windows[int(position)] = Window(**window)
 
         # add _ to numbers
         shortcuts = {}
-        for key, value in toml_data['shortcut'].items():
+        for key, value in toml_data["shortcut"].items():
             if key.isnumeric():
-                shortcuts[f'_{key}'] = value
+                shortcuts[f"_{key}"] = value
             else:
                 shortcuts[key] = value
 
         return Config(
-                shortcut=Shortcut(
-                    **shortcuts
-                ),
-                
-                organizer=Organizer(
-                    windows=windows
-                )
-            )
+            shortcut=Shortcut(**shortcuts), organizer=Organizer(windows=windows)
+        )

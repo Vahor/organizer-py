@@ -11,13 +11,15 @@ Organizer is a Python tool to focus your windows with keyboard shortcuts on macO
 - Python 3.10+
 - Yabai: https://github.com/koekeishiya/yabai
 - Poetry: https://python-poetry.org/docs/ _(optional, you can use `pip` instead and install the dependencies manually)_
-- Poe: https://github.com/nathan-ho/poe _(optional, you can run the `script` directly)_
 
 ## How to use
 
 1. Clone the repository
-2. Install the dependencies: `poetry install` or `pip install pynput toml rich`
-3. Run the script: `poetry run python src/app.py` or `poe run`
+2. `uv pip install -r requirements.txt`
+3. `source .venv/bin/activate`
+4. `python src/app.py`
+5. Configure the shortcuts in `config.toml`
+
 
 ## Configuration
 

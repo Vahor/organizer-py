@@ -12,17 +12,17 @@ prev = "["
 9    = "<ctrl>+9"
 
 [organizer.1]
-app_name = "firefox"
+app_name = "dofus"
+title = "vahor"
 
 [organizer.2]
-app_name = "discord"
+app_name = "dofus"
+title = "riche"
 
 [organizer.3]
-title = "spotify"
+app_name = "dofus"
+title = "fleche"
 
 [organizer.4]
-app_name = "alacritty"
-
-[organizer.5]
-app_name = "iina"
-
+app_name = "dofus"
+title = "pandas"

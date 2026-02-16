@@ -2,21 +2,22 @@ import subprocess
 import json
 from config import Window
 
+
 def get_window_by_name(query: Window):
     try:
         # Search for the window by name
-        app_name = (query.app_name or '').lower()
-        title = (query.title or '').lower()
+        app_name = (query.app_name or "").lower()
+        title = (query.title or "").lower()
 
         if len(app_name) == 0 and len(title) == 0:
             return None
 
         # Run the Yabai query to get all windows in JSON format
         result = subprocess.run(
-            ['yabai', '-m', 'query', '--windows'],
+            ["yabai", "-m", "query", "--windows"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            text=True,
         )
 
         # Check if the query ran successfully
@@ -28,8 +29,8 @@ def get_window_by_name(query: Window):
         windows = json.loads(result.stdout)
 
         for window in windows:
-            window_app_name = window.get('app', '').lower()
-            window_title = window.get('title', '').lower()
+            window_app_name = window.get("app", "").lower()
+            window_title = window.get("title", "").lower()
 
             app_name_match = len(app_name) == 0 or app_name in window_app_name
             title_match = len(title) == 0 or title in window_title
@@ -41,10 +42,11 @@ def get_window_by_name(query: Window):
         print(f"An error occurred: {e}")
         return None
 
+
 def focus_window_by_name(query: Window):
     if not query:
         return False
     window = get_window_by_name(query)
     if window:
-        subprocess.run(['yabai', '-m', 'window', '--focus', str(window['id'])])
+        subprocess.run(["yabai", "-m", "window", "--focus", str(window["id"])])
         return True

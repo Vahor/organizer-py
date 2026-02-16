@@ -3,7 +3,8 @@ from typing import TypedDict
 
 config = load_config()
 
+
 class State(TypedDict):
-    current_index: int 
-    quitting: bool 
+    current_index: int
+    quitting: bool
     status_message: str

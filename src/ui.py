@@ -10,6 +10,7 @@ from time import sleep
 console = Console()
 console.clear()
 
+
 def make_layout() -> Layout:
     """Define the layout."""
     layout = Layout(name="root")
@@ -20,6 +21,7 @@ def make_layout() -> Layout:
         Layout(name="footer", size=3),
     )
     return layout
+
 
 class Header:
     """Display header with clock."""
@@ -33,10 +35,12 @@ class Header:
         )
         return Panel(grid, style="white")
 
+
 class Status:
     """Display status."""
 
     state: State
+
     def __init__(self, state: State):
         self.state = state
 
@@ -52,15 +56,19 @@ class Status:
         )
         return Panel(grid, style="white")
 
+
 class Body:
     """Display body."""
 
     state: State
+
     def __init__(self, state: State):
         self.state = state
 
     def __rich__(self) -> Panel:
-        table = Table(show_header=True, header_style="bold magenta", expand=True, box=None)
+        table = Table(
+            show_header=True, header_style="bold magenta", expand=True, box=None
+        )
         table.add_column("Position", style="bold")
         table.add_column("Shortcut")
         table.add_column("Window", ratio=1)
@@ -69,7 +77,7 @@ class Body:
         for position, window in config.organizer.windows.items():
             is_active = position == current_index
             pos_col = f"[green]{position}[/green]" if is_active else f"{position}"
-            table.add_row(pos_col, config.shortcut[f'_{position}'], window.name())
+            table.add_row(pos_col, config.shortcut[f"_{position}"], window.name())
 
         return Panel(table, style="white", border_style="none", padding=(0, 0))
 
@@ -86,8 +94,7 @@ def start_ui(state: State):
             if len(state["status_message"]) > 0:
                 timer += 1
                 if timer % 2 == 0:
-                    state["status_message"] = "" 
+                    state["status_message"] = ""
                     timer = 0
             sleep(1)
     console.clear()
-
