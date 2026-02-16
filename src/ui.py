@@ -127,6 +127,6 @@ def start_ui(state: State):
     logs_layout["logs_help"].update(HelpBar())
     layout["logs"].update(logs_layout)
 
-    with Live(layout, refresh_per_second=4):
+    with Live(layout, refresh_per_second=10, screen=True):
         while not state["quitting"]:
             sleep(0.25)
