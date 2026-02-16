@@ -13,8 +13,5 @@ class State(TypedDict):
 
 def add_log(state: State, message: str, level: str = "info") -> None:
     """Add a log entry to the state."""
-    if "logs" not in state:
-        state["logs"] = []
-
     timestamp = datetime.now().strftime("%H:%M:%S")
     state["logs"].append({"timestamp": timestamp, "message": message, "level": level})

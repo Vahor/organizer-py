@@ -1,4 +1,4 @@
-from state import State, config, add_log
+from state import State, config
 
 from rich.console import Console
 from rich.layout import Layout
@@ -127,6 +127,6 @@ def start_ui(state: State):
     logs_layout["logs_help"].update(HelpBar())
     layout["logs"].update(logs_layout)
 
-    with Live(layout, refresh_per_second=10, screen=True):
+    with Live(layout, refresh_per_second=4, screen=True):
         while not state["quitting"]:
             sleep(0.25)
