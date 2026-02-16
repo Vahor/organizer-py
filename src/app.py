@@ -14,14 +14,15 @@ if __name__ == "__main__":
         state = manager.dict()
         state["current_index"] = 1
         state["quitting"] = False
-        state["logs"] = [
-            {
-                "timestamp": datetime.now().strftime("%H:%M:%S"),
-                "message": "Application started",
-                "level": "success",
-            }
-        ]
-
+        state["logs"] = manager.list(
+            [
+                {
+                    "timestamp": datetime.now().strftime("%H:%M:%S"),
+                    "message": "Application started",
+                    "level": "success",
+                }
+            ]
+        )
 
         p_hotkeys = Process(target=setup_hotkeys, args=(state,))
         p_hotkeys.start()

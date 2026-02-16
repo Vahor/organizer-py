@@ -142,5 +142,3 @@ def start_ui(state: State):
             logging.info("Running...")
             for line in log_buffer.getvalue().split("\n"):
                 add_log(state, line, "info")
-
-            logs_layout["logs_content"].update(Logs(state))
