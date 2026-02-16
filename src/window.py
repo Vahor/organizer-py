@@ -2,6 +2,7 @@ import subprocess
 import json
 from config import Window
 from state import add_log
+from logging_utils import run_subprocess_with_logging
 
 
 def get_window_by_name(query: Window, state):
@@ -55,20 +56,9 @@ def focus_window_by_name(query: Window, state):
         return False
     window = get_window_by_name(query, state)
     if window:
-        result = subprocess.run(
+        run_subprocess_with_logging(state,
             ["yabai", "-m", "window", "--focus", str(window["id"])],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
         )
-
-        # Log any stderr output from yabai
-        if result.stderr:
-            add_log(state, f"Yabai: {result.stderr.strip()}", "info")
-
-        if result.returncode != 0:
-            add_log(state, f"Failed to focus window: {result.stderr}", "error")
-            return False
 
         return True
     else:

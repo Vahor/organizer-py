@@ -22,6 +22,7 @@ if __name__ == "__main__":
             }
         ]
 
+
         p_hotkeys = Process(target=setup_hotkeys, args=(state,))
         p_hotkeys.start()
         p_ui = Process(target=start_ui, args=(state,))

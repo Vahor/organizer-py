@@ -1,4 +1,4 @@
-from state import State, config
+from state import State, add_log, config
 
 from rich.console import Console
 from rich.layout import Layout
@@ -6,10 +6,19 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.live import Live
 from rich.text import Text
+from rich.logging import RichHandler
 from time import sleep
+from io import StringIO
+import logging
 
-console = Console()
+
+log_buffer = StringIO()
+console = Console(file=log_buffer, width=100)
 console.clear()
+
+handler = RichHandler(console=console, rich_tracebacks=True)
+logging.basicConfig(level=logging.DEBUG, format="%(message)s", handlers=[handler])
+log = logging.getLogger(__name__)
 
 
 def make_layout() -> Layout:
@@ -130,3 +139,8 @@ def start_ui(state: State):
     with Live(layout, refresh_per_second=4, screen=True):
         while not state["quitting"]:
             sleep(0.25)
+            logging.info("Running...")
+            for line in log_buffer.getvalue().split("\n"):
+                add_log(state, line, "info")
+
+            logs_layout["logs_content"].update(Logs(state))

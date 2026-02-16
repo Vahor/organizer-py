@@ -88,3 +88,7 @@ def setup_hotkeys(state: State):
             h.join()
     except KeyboardInterrupt:
         quit_app()
+    except Exception as e:
+        add_log(state, f"Hotkeys error: {e}", "error")
+        quit_app()
+
