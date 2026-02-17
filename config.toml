@@ -1,4 +1,5 @@
 [shortcut]
+quit = "<ctrl>+c"
 next = "|"
 prev = "["
 1    = "<ctrl>+1"
@@ -12,17 +13,21 @@ prev = "["
 9    = "<ctrl>+9"
 
 [organizer.1]
-app_name = "firefox"
+app_name = "dofus"
+title = "Feca"
 
 [organizer.2]
-app_name = "discord"
+app_name = "dofus"
+title = "Cra"
 
 [organizer.3]
-title = "spotify"
+app_name = "dofus"
+title = "Enu"
 
 [organizer.4]
-app_name = "alacritty"
+app_name = "dofus"
+title = "Pandawa"
 
-[organizer.5]
-app_name = "iina"
-
+# [organizer.5]
+# app_name = "alacritty"
+# title = "alacritty"

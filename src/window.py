@@ -1,50 +1,93 @@
-import subprocess
-import json
-from config import Window
+from state import add_log
+from multiprocessing import Queue
 
-def get_window_by_name(query: Window):
-    try:
-        # Search for the window by name
-        app_name = (query.app_name or '').lower()
-        title = (query.title or '').lower()
+import AppKit
+import ApplicationServices
 
-        if len(app_name) == 0 and len(title) == 0:
-            return None
+_cache: dict = {}
 
-        # Run the Yabai query to get all windows in JSON format
-        result = subprocess.run(
-            ['yabai', '-m', 'query', '--windows'],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
 
-        # Check if the query ran successfully
-        if result.returncode != 0:
-            print(f"Error running Yabai: {result.stderr}")
-            return None
+def get_window_for_app(ax_app, title):
+    err, windows = ApplicationServices.AXUIElementCopyAttributeValue(
+        ax_app, "AXWindows", None
+    )
 
-        # Parse the JSON result
-        windows = json.loads(result.stdout)
-
-        for window in windows:
-            window_app_name = window.get('app', '').lower()
-            window_title = window.get('title', '').lower()
-
-            app_name_match = len(app_name) == 0 or app_name in window_app_name
-            title_match = len(title) == 0 or title in window_title
-            if app_name_match and title_match:
-                return window
-
-        return None  # If no window is found with the given name
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    if err or not windows:
         return None
 
-def focus_window_by_name(query: Window):
-    if not query:
+    for window in windows:
+        err, window_title = ApplicationServices.AXUIElementCopyAttributeValue(
+            window, "AXTitle", None
+        )
+        if (
+            not err
+            and window_title
+            and title.lower() in window_title.lower()
+        ):
+            return window
+
+    return None
+
+
+def get_app(app_name, title):
+    cache_key = f"{app_name}:{title}"
+
+    # Try cached app/AX application first
+    cached = _cache.get(cache_key)
+    if cached:
+        app = cached["app"]
+        ax_app = cached["ax_app"]
+
+        window = get_window_for_app(ax_app, title)
+        if window:
+            return app, ax_app, window
+
+        # Fall through to a full search if cache is stale
+
+    # No valid cache entry or cache was stale: search all matching apps,
+    # and only cache the specific app whose window title matches.
+    workspace = AppKit.NSWorkspace.sharedWorkspace()
+    for app in workspace.runningApplications():
+        if app.localizedName().lower() != app_name.lower():
+            continue
+
+        pid = app.processIdentifier()
+        ax_app = ApplicationServices.AXUIElementCreateApplication(pid)
+
+        window = get_window_for_app(
+            ax_app,
+            title,
+        )
+        if window:
+            _cache[cache_key] = {"app": app, "ax_app": ax_app}
+            return app, ax_app, window
+
+    return None, None, None
+
+
+def focus_app(app_name, title):
+    app, ax_app, window = get_app(app_name, title)
+    if not app or not window:
         return False
-    window = get_window_by_name(query)
-    if window:
-        subprocess.run(['yabai', '-m', 'window', '--focus', str(window['id'])])
-        return True
+
+    app.activateWithOptions_(AppKit.NSApplicationActivateIgnoringOtherApps)
+    ApplicationServices.AXUIElementPerformAction(window, "AXRaise")
+    return True
+
+
+def window_worker(queue: Queue, state):
+    while True:
+        try:
+            item = queue.get()
+            if item is None:  # shutdown signal
+                break
+            app_name, title = item
+            if not focus_app(app_name, title):
+                add_log(
+                    state,
+                    f"Could not focus app: {app_name} with title: {title}",
+                    "error",
+                )
+
+        except Exception as e:
+            add_log(state, f"Caught exception: {e}", "error")
