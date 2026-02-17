@@ -1,17 +1,21 @@
+from multiprocessing import Queue
 import signal
 import sys
 
 from state import State, config, add_log
+from time import sleep
 
-from window import focus_window_by_name
 from pynput import keyboard
 
 
 def _next_index(state: State):
     idx = state["current_index"]
-    idx = (idx + 1) % len(config.organizer.windows)
-    if idx == 0:
-        idx = len(config.organizer.windows)
+    while True:
+        idx = (idx + 1) % len(config.organizer.windows)
+        if idx == 0:
+            idx = len(config.organizer.windows)
+        if config.organizer.windows.get(idx):
+            break
 
     state["current_index"] = idx
     return idx
@@ -19,15 +23,18 @@ def _next_index(state: State):
 
 def _prev_index(state: State):
     idx = state["current_index"]
-    idx = (idx - 1) % len(config.organizer.windows)
-    if idx == 0:
-        idx = len(config.organizer.windows)
+    while True:
+        idx = (idx - 1) % len(config.organizer.windows)
+        if idx == 0:
+            idx = len(config.organizer.windows)
+        if config.organizer.windows.get(idx):
+            break
 
     state["current_index"] = idx
     return idx
 
 
-def setup_hotkeys(state: State):
+def setup_hotkeys(state: State, window_queue: Queue):
 
     def quit_app():
         add_log(state, "Goodbye!", "success")
@@ -42,11 +49,10 @@ def setup_hotkeys(state: State):
 
     def focus_window_by_name_wrapper(query):
         add_log(state, f"Focusing {query.name()}...", "info")
-        if not focus_window_by_name(query, state):
-            add_log(state, f"Could not find window with name {query.name()}", "error")
+        window_queue.put((query.app_name, query.title))
 
     hotkeys = {
-        "q": lambda: quit_app(),
+        config.shortcut.quit: lambda: quit_app(),
         # TODO: don't know why but doing this in a loop doesn't work
         config.shortcut._1: lambda: focus_window_by_name_wrapper(
             config.organizer.windows[1]
@@ -89,6 +95,7 @@ def setup_hotkeys(state: State):
     except KeyboardInterrupt:
         quit_app()
     except Exception as e:
-        add_log(state, f"Hotkeys error: {e}", "error")
+        add_log(state, f"Caught exception: {e}", "error")
+        add_log(state, "Exiting in 5 seconds...", "error")
+        sleep(5)
         quit_app()
-

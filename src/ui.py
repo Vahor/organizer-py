@@ -1,6 +1,6 @@
 from state import State, add_log, config
 
-from rich.console import Console
+from rich.console import Console, ConsoleOptions, RenderResult
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.table import Table
@@ -14,7 +14,6 @@ import logging
 
 log_buffer = StringIO()
 console = Console(file=log_buffer, width=100)
-console.clear()
 
 handler = RichHandler(console=console, rich_tracebacks=True)
 logging.basicConfig(level=logging.DEBUG, format="%(message)s", handlers=[handler])
@@ -50,7 +49,7 @@ class HelpBar:
     """Display help bar at the bottom of logs panel."""
 
     def __rich__(self) -> str:
-        help_text = f"[b]q[/b]: quit • [b]{config.shortcut.next}[/b]: next • [b]{config.shortcut.prev}[/b]: previous • by [b]github.com/vahor[/b]"
+        help_text = f"[b]{config.shortcut.quit}[/b]: quit • [b]{config.shortcut.next}[/b]: next • [b]{config.shortcut.prev}[/b]: previous • by [b]github.com/vahor[/b]"
         return help_text
 
 
@@ -62,15 +61,15 @@ class Logs:
     def __init__(self, state: State):
         self.state = state
 
-    def __rich__(self) -> Panel:
+    def __rich_console__(self, _: Console, options: ConsoleOptions) -> RenderResult:
         logs = self.state.get("logs", [])
-        # Show last 100 log entries to keep UI responsive
-        display_logs = logs[-100:] if len(logs) > 100 else logs
+        max_visible = (options.height or 4) - 4
+        display_logs = logs[-max_visible:]
 
         if not display_logs:
             content = Text("No logs yet...", style="dim")
         else:
-            content = Text()
+            content = Text(end="")
             for log in display_logs:
                 timestamp = log.get("timestamp", "")
                 message = log.get("message", "")
@@ -87,12 +86,13 @@ class Logs:
                 content.append(f"[{timestamp}] ", style="dim")
                 content.append(f"{message}\n", style=line_color)
 
-        return Panel(
+        yield Panel(
             content,
             title="Logs",
             style="white",
             border_style="white",
             title_align="left",
+            height=options.height,
         )
 
 
@@ -114,6 +114,9 @@ class Body:
 
         current_index = self.state["current_index"]
         for position, window in config.organizer.windows.items():
+            if not window:
+                continue
+
             is_active = position == current_index
             pos_col = f"[green]{position}[/green]" if is_active else f"{position}"
             table.add_row(pos_col, config.shortcut[f"_{position}"], window.name())
@@ -127,18 +130,18 @@ def start_ui(state: State):
     layout["main"].update(Body(state))
 
     # Create a layout for logs section with help bar at bottom
-    logs_layout = Layout(name="logs_section")
+    logs_layout = Layout(name="logs")
     logs_layout.split(
         Layout(name="logs_content", ratio=1),
-        Layout(name="logs_help", size=1),
+        Layout(name="help", size=1),
     )
-    logs_layout["logs_content"].update(Logs(state))
-    logs_layout["logs_help"].update(HelpBar())
+    logs_layout["logs_content"].update(Logs(state))  # type: ignore
+    logs_layout["help"].update(HelpBar())
     layout["logs"].update(logs_layout)
 
-    with Live(layout, refresh_per_second=4, screen=True):
+    with Live(layout, refresh_per_second=10, screen=True):
         while not state["quitting"]:
-            sleep(0.25)
-            logging.info("Running...")
+            sleep(0.2)
             for line in log_buffer.getvalue().split("\n"):
-                add_log(state, line, "info")
+                if line:
+                    add_log(state, line, "info")

@@ -1,8 +1,9 @@
 import state
 
 from hotkeys import setup_hotkeys
+from window import window_worker
 from ui import start_ui
-from multiprocessing import Process, Manager
+from multiprocessing import Process, Manager, Queue
 from datetime import datetime
 from rich.console import Console
 
@@ -24,10 +25,15 @@ if __name__ == "__main__":
             ]
         )
 
-        p_hotkeys = Process(target=setup_hotkeys, args=(state,))
-        p_hotkeys.start()
+        window_queue = Queue()
+
+        p_hotkeys = Process(target=setup_hotkeys, args=(state,window_queue))
         p_ui = Process(target=start_ui, args=(state,))
+        p_window = Process(target=window_worker, args=(window_queue, state))
+
+        p_hotkeys.start()
         p_ui.start()
+        p_window.start()
 
         try:
             p_hotkeys.join()
@@ -35,8 +41,11 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             pass
         finally:
+            window_queue.put(None)
+            p_window.terminate()
             p_hotkeys.terminate()
             p_ui.terminate()
+            p_window.join()
             p_hotkeys.join()
             p_ui.join()
 

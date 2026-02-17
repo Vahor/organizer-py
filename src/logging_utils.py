@@ -15,15 +15,9 @@ def run_subprocess_with_logging(
 
     # TODO: live logs
     if result.stdout:
-        for line in result.stdout.strip().split("\n"):
-            if line.strip():
-                add_log(state, line.strip(), log_level)
+        add_log(state, result.stdout.strip(), log_level)
 
     if result.stderr:
-        for line in result.stderr.strip().split("\n"):
-            if line.strip():
-                add_log(state, line.strip(), error_level)
+        add_log(state, result.stderr.strip(), error_level)
 
     return result
-
-

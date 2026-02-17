@@ -1,4 +1,5 @@
 [shortcut]
+quit = "<ctrl>+c"
 next = "|"
 prev = "["
 1    = "<ctrl>+1"
@@ -13,16 +14,20 @@ prev = "["
 
 [organizer.1]
 app_name = "dofus"
-title = "vahor"
+title = "Feca"
 
 [organizer.2]
 app_name = "dofus"
-title = "riche"
+title = "Cra"
 
 [organizer.3]
 app_name = "dofus"
-title = "fleche"
+title = "Enu"
 
 [organizer.4]
 app_name = "dofus"
-title = "pandas"
+title = "Pandawa"
+
+# [organizer.5]
+# app_name = "alacritty"
+# title = "alacritty"

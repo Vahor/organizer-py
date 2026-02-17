@@ -6,6 +6,7 @@ import toml
 class Shortcut:
     next: str
     prev: str
+    quit: str
     _1: str
     _2: str
     _3: str
@@ -50,8 +51,10 @@ def load_config(file_path: str = "./config.toml") -> Config:
         toml_data = toml.load(f)
 
         windows = {}
-        for position, window in toml_data["organizer"].items():
-            windows[int(position)] = Window(**window)
+        max_position = 9
+        for i in range(max_position):
+            data = toml_data["organizer"].get(str(i))
+            windows[i] = Window(**data) if data else None
 
         # add _ to numbers
         shortcuts = {}
